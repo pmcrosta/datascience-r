@@ -30,7 +30,10 @@ RUN export DEBIAN_FRONTEND=noninteractive; apt-get -y update \
     unixodbc \
     libgdal-dev \
     libgeos-dev \
-    libfuse-dev 
+    libfuse-dev \
+    libudunits2-0 \
+    libudunits2-dev \
+    whois
 
 # split up package installs
 RUN install2.r --error \
