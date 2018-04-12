@@ -18,22 +18,25 @@ Clone the repo and run the following in the directory to build the container:
 # Helpful commands
 
 To build a container:
-`docker build -t datascience-r .`
+`$ docker build -t datascience-r .`
+
+To for a rebuild:
+`$ docker build --no-cache -t datascience-r .`
 
 To list images:
-`docker image ls -a`
+`$ docker image ls -a`
 
 To run the container:
-`docker run -d -e ROOT=TRUE -p 8787:8787 datascience-r`
+`$ docker run -d -e ROOT=TRUE -p 8787:8787 datascience-r`
 
 To list containers:
-`docker container ls -a`
+`$ docker container ls -a`
 
 To ssh into a container with ID ac95e48eec75
-`docker exec -it ac95e48eec75 /bin/bash`
+`$ docker exec -it ac95e48eec75 /bin/bash`
 
 To ssh into a version of the container as root:
-`docker run --rm -ti datascience-r  bash`
+`$ docker run --rm -ti datascience-r  bash`
 
-To get a list of installed packages
-`dpkg -l | less`
+To get a list of installed debian packages
+`$ dpkg -l | less`

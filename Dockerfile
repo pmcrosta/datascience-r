@@ -30,6 +30,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; apt-get -y update \
     unixodbc \
     libgdal-dev \
     libgeos-dev \
+    libfuse-dev 
 
 # split up package installs
 RUN install2.r --error \
@@ -38,6 +39,8 @@ RUN install2.r --error \
         colourpicker DT dygraphs gtools rsconnect shinyjs shinythemes threejs \
         xts bayesplot lme4 loo rstantools StanHeaders RcppEigen \
         rstan shinystan rstanarm \
+        && rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
+		&& rm -rf /var/lib/apt/lists/*
     
 RUN install2.r --error \    
         lambda.r semver sys abind acs ada Amelia aod arm C50 car caret choroplethr choroplethrMaps \        
@@ -45,17 +48,20 @@ RUN install2.r --error \
         e1071 earth effects elastic elasticsearchr evd fastmatch ff ffbase foreach forecast fracdiff gdata \        
         geosphere ggdendro ggmap ggthemes glmnet googleVis gridBase heplots humaniformat influenceR interplot \
         ipred irlba iterators jpeg kernlab klaR lava leaflet lmtest maxLik mda memisc miscTools modeltools \
+        && rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
+		&& rm -rf /var/lib/apt/lists/*
         
 RUN install2.r --error \  
         networkD3 NMF numDeriv party partykit pbapply pbkrtest pdftools pkgmaker plotly \
         plotmo plotrix png pROC prodlim proto quadprog QuantPsyc randomcoloR randomForest raster RcppArmadillo RecordLinkage \
-        registry RForcecom RGA RGoogleAnalytics RgoogleMaps rJava RJDBC rjson R.methodsS3 rngtools R.oo RSelenium \        
-        R.utils sampleSelection SAScii sendmailR shinyAce shinyBS shinydashboard sjmisc stargazer strucchange \
-        survey systemfit TeachingDemos timeDate truncdist tseries urltools V8 VGAM visNetwork WDI XLConnect XLConnectJars xlsx xlsxjars \
+        registry RForcecom RGA RGoogleAnalytics RgoogleMaps rJava RJDBC rjson R.methodsS3 rngtools R.oo RSelenium sna \        
+        R.utils sampleSelection SAScii sendmailR shinyAce shinyBS shinydashboard sjmisc stargazer strucchange keras \
+        survey systemfit timeDate truncdist tseries urltools V8 VGAM visNetwork WDI XLConnect XLConnectJars xlsx xlsxjars \
         class CVST ddalpha DEoptimR dimRed DRR imputeTS ModelMetrics quantmod ranger RcppRoll reporttools sfsmisc stinepack TTR odbc xgboost \
+        && rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
+		&& rm -rf /var/lib/apt/lists/*
 
-RUN rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
-    && R CMD javareconf \
+RUN R CMD javareconf \
     && R -e "library(devtools); \
         install_github('hadley/multidplyr');" \
     && rm -rf /var/lib/apt/lists/*
