@@ -26,12 +26,13 @@ Clone the repo and run the following in the directory to build the container:
 * Set environment variable to control machine size and desired rstudio password
   * `$ MACHINETYPE=g1-small`
   * `$ PASSWORD=change_this`
+  * `$ SERVICE_ACCOUNT=943134138766-compute@developer.gserviceaccount.com` (change to yours)
 * Use gcloud SDK to launch instance (can also be done through GUI)
-  * `$ gcloud beta compute --project=$GCP_PROJECT instances create-with-container dsserver --zone=us-east1-c --machine-type=$MACHINETYPE --subnet=default --maintenance-policy=MIGRATE --service-account=943134138766-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --min-cpu-platform=Automatic --tags=rstudio,http-server --image=cos-stable-65-10323-69-0 --image-project=cos-cloud --boot-disk-size=100GB --boot-disk-type=pd-ssd --boot-disk-device-name=dsserver --container-image=gcr.io/$GCP_PROJECT/datascience-r:latest --container-restart-policy=always --container-privileged --container-env=ROOT=TRUE,PASSWORD=$PASSWORD`
+  * `$ gcloud beta compute --project=$GCP_PROJECT instances create-with-container dsserver --zone=us-east1-c --machine-type=$MACHINETYPE --subnet=default --maintenance-policy=MIGRATE --service-account=$SERVICE_ACCOUNT --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --min-cpu-platform=Automatic --tags=rstudio,http-server --image=cos-stable-65-10323-69-0 --image-project=cos-cloud --boot-disk-size=100GB --boot-disk-type=pd-ssd --boot-disk-device-name=dsserver --container-image=gcr.io/$GCP_PROJECT/datascience-r:latest --container-restart-policy=always --container-privileged --container-env=ROOT=TRUE,PASSWORD=$PASSWORD`
   * Currently this command requires "gcloud beta compute..."
 * Also create firewall rule to allow access to 8787
   * `$ gcloud compute --project=$GCP_PROJECT firewall-rules create rstudio --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:8787 --source-ranges=0.0.0.0/0 --target-tags=rstudio`
- `$ gcloud compute --project=$GCP_PROJECT firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server`
+  * `$ gcloud compute --project=$GCP_PROJECT firewall-rules create default-allow-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server`
 * Access RStudio via the http://external_ip:8787
 * To shut down instance
   * `$ gcloud compute instances stop dsserver`

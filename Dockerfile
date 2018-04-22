@@ -33,6 +33,13 @@ RUN export DEBIAN_FRONTEND=noninteractive; apt-get -y update \
     libfuse-dev \
     libudunits2-0 \
     libudunits2-dev \
+    gdebi-core \
+    libcurl4-gnutls-dev \
+    curl \
+    gnupg \
+    pandoc \
+    pandoc-citeproc \
+    libxt-dev \
     whois
 
 # split up package installs
@@ -70,7 +77,26 @@ RUN R CMD javareconf \
     && rm -rf /var/lib/apt/lists/*
 
 
+## Download and install Shiny Server
+RUN wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -O "version.txt" && \
+    VERSION=$(cat version.txt)  && \
+    wget --no-verbose "https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$VERSION-amd64.deb" -O shiny-server-latest.deb && \
+    gdebi -n shiny-server-latest.deb && \
+    rm -f version.txt shiny-server-latest.deb
 
+
+RUN cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/
+
+RUN mkdir /home/rstudio/ShinyApps/
+
+RUN cp -R /usr/local/lib/R/site-library/shiny/examples/* /home/rstudio/ShinyApps/
+
+EXPOSE 3838
+
+RUN mkdir -p /var/log/shiny-server
+RUN chown shiny.shiny /var/log/shiny-server
+
+## run shiny-server from root terminal to start shiny server
 
 
 
