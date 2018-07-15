@@ -40,7 +40,17 @@ RUN export DEBIAN_FRONTEND=noninteractive; apt-get -y update \
     pandoc \
     pandoc-citeproc \
     libxt-dev \
-    whois
+    whois \
+    libfreetype6-dev \
+    libzmq3-dev \
+    pkg-config \
+    python \
+    python-dev \
+    rsync \
+    software-properties-common \
+    unzip \
+    libxml2-dev \
+    htop
 
 # split up package installs
 RUN install2.r --error \
@@ -64,17 +74,57 @@ RUN install2.r --error \
 RUN install2.r --error \  
         networkD3 NMF numDeriv party partykit pbapply pbkrtest pdftools pkgmaker plotly \
         plotmo plotrix png pROC prodlim proto quadprog QuantPsyc randomcoloR randomForest raster RcppArmadillo RecordLinkage \
-        registry RForcecom RGA RGoogleAnalytics RgoogleMaps rJava RJDBC rjson R.methodsS3 rngtools R.oo RSelenium sna \        
-        R.utils sampleSelection SAScii sendmailR shinyAce shinyBS shinydashboard sjmisc stargazer strucchange keras \
+        registry RForcecom RGA RgoogleMaps rJava RJDBC rjson R.methodsS3 rngtools R.oo sna \        
+        R.utils sampleSelection SAScii sendmailR shinyAce shinyBS shinydashboard sjmisc stargazer strucchange \
         survey systemfit timeDate truncdist tseries urltools V8 VGAM visNetwork WDI XLConnect XLConnectJars xlsx xlsxjars \
         class CVST ddalpha DEoptimR dimRed DRR imputeTS ModelMetrics quantmod ranger RcppRoll reporttools sfsmisc stinepack TTR odbc xgboost \
         && rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
 		&& rm -rf /var/lib/apt/lists/*
 
+RUN install2.r --error \  
+        twilio \
+        && rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
+        && rm -rf /var/lib/apt/lists/*
+
 RUN R CMD javareconf \
     && R -e "library(devtools); \
         install_github('hadley/multidplyr');" \
     && rm -rf /var/lib/apt/lists/*
+
+
+RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py
+
+RUN pip --no-cache-dir install \
+        ipykernel \
+        jupyter \
+        matplotlib \
+        numpy \
+        scipy \
+        keras \
+        h5py \
+        && \
+    python -m ipykernel.kernelspec
+
+RUN pip install tensorflow
+
+RUN pip --no-cache-dir install \
+  --upgrade tensorflow
+  
+RUN pip --no-cache-dir install virtualenv \
+    pillow
+
+RUN install2.r --error \
+    tensorflow \
+    keras \
+    neuralnet \
+    ISLR \
+    caTools
+    
+RUN R -e "tensorflow::install_tensorflow()"
+
+RUN R -e "keras::install_keras()"
 
 
 ## Download and install Shiny Server
